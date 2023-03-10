@@ -195,11 +195,53 @@
             \label{fig:fs_structure.png}
         \end{figure}
         
-        \textbf{Superblock}: метаподаци о метаподацима фајл система
+        \textbf{Superblock}: метаподаци о фајл систему
         
         \textbf{Inodes}: метаподаци о садржају фајл система, један inode представља један фајл или директоријум
         
         \textbf{Data Region}: блокови који представљају садржај датотека
+    \end{frame}
+    
+    \begin{frame}[allowframebreaks]{Superblock}
+        \begin{itemize}
+            \item
+        \end{itemize}
+        
+        \framebreak
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/inode1.png}
+            \label{fig:inode1.png}
+        \end{figure}
+    \end{frame}
+    
+    \begin{frame}[allowframebreaks]{Free inode list}
+        \begin{itemize}
+            \item
+        \end{itemize}
+        
+        \framebreak
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/inode1.png}
+            \label{fig:inode1.png}
+        \end{figure}
+    \end{frame}
+    
+    \begin{frame}[allowframebreaks]{Free data block list}
+        \begin{itemize}
+            \item
+        \end{itemize}
+        
+        \framebreak
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/inode1.png}
+            \label{fig:inode1.png}
+        \end{figure}
     \end{frame}
     
     \begin{frame}[allowframebreaks]{Inode}
@@ -263,6 +305,49 @@
             \centering
             \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/dir_layout2.png}
             \label{fig:dir_layout2.png}
+        \end{figure}
+    \end{frame}
+    
+    \begin{frame}[allowframebreaks]{Читање фајла}
+        \begin{itemize}
+            \item Желимо да прочитамо фајл \textbf{/foo/bar}
+            \item Да би добавили садржај, потребно је наћи inode који представља \textbf{bar}
+            \item Путању растављамо на делове [\textbf{/}, \textbf{foo}, \textbf{bar}]
+            \item Проналазимо inode који представља \textbf{/}
+            \begin{itemize}
+                \item то је увек inode ID 2, проналазимо га у листи по индексу
+            \end{itemize}
+            \item Читамо садржај директоријума \textbf{/}, проналазимо inode који представља \textbf{bar}
+            \item Читамо садржај директоријума \textbf{bar}, проналазимо inode који представља \textbf{foo}
+            \item Читамо садржај фајла \textbf{foo}
+            \item Уписује се време прступа у inode \textbf{foo}
+        \end{itemize}
+        
+        \framebreak
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/read.png}
+            \label{fig:read.png}
+        \end{figure}
+    \end{frame}
+    
+    \begin{frame}[allowframebreaks]{Исписивање фајла}
+        \begin{itemize}
+            \item Желимо да испишемо нови фајл \textbf{/foo/bar}
+            \item Проналазимо слободан inode
+            \item Креирамо нови inode који ће да представља \textbf{bar}
+            \item inode \textbf{bar} означавамо као заузет
+            \item Проналазимо директоријум \textbf{/foo}
+            \item У фајл који представља директоријум додајемо нови запис (foo, new ID)
+        \end{itemize}
+        
+        \framebreak
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/write.png}
+            \label{fig:write.png}
         \end{figure}
     \end{frame}
     
