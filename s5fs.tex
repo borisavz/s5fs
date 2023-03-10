@@ -202,45 +202,54 @@
         \textbf{Data Region}: блокови који представљају садржај датотека
     \end{frame}
     
-    \begin{frame}[allowframebreaks]{Superblock}
+    \begin{frame}{Superblock}
         \begin{itemize}
-            \item
+            \item Када покушавамо да интерпретирамо садржај фајл система, неопходно је да имамо полазну тачку
+            \item Садржи основне податке о фајл систему
+            \begin{itemize}
+                \item величину фајл система
+                \item величину листе inode-ова
+                \item број слободних inode-ова и data block-ова
+                \item први део листе слободних data block-ова
+                \item неке слободне inode-ове (налик кешу)
+            \end{itemize}
         \end{itemize}
-        
-        \framebreak
-        
-        \begin{figure}
-            \centering
-            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/inode1.png}
-            \label{fig:inode1.png}
-        \end{figure}
     \end{frame}
     
     \begin{frame}[allowframebreaks]{Free inode list}
         \begin{itemize}
-            \item
+            \item Неопходно је да знамо који inode-ови су слободни, како би могли да их искористимо за креирање фајлова/директоријума
+            \item У inode листи, слободни inode-ови су означени тако што је mode = 0
+            \item Додатну (кеширану) листу садржи superblock
         \end{itemize}
         
         \framebreak
         
         \begin{figure}
             \centering
-            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/inode1.png}
-            \label{fig:inode1.png}
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/free_inode_list.png}
+            \label{fig:free_inode_list.png}
         \end{figure}
     \end{frame}
     
     \begin{frame}[allowframebreaks]{Free data block list}
         \begin{itemize}
-            \item
+            \item Неопходно је да знамо који data block-ови су слободни, како би могли да их искористимо за чување садржаја фајлова/директоријума
+            \item Први део (100 показивача) се налази у superblock-у
+            \begin{itemize}
+                \item уколико то није довољно да би се описао слободан простор, задњи показивач показује на листу од још 100 слободних блокова
+                \item ...и тако даље, док сав слободан простор није описан
+            \end{itemize}
+            \item Структура налик на комбинацију array list и linked list
+            \item Ослобађање data block-а изазива реконструкцију лист
         \end{itemize}
         
         \framebreak
         
         \begin{figure}
             \centering
-            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/inode1.png}
-            \label{fig:inode1.png}
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/free_list.png}
+            \label{fig:free_list.png}
         \end{figure}
     \end{frame}
     
