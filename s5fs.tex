@@ -25,6 +25,17 @@
         \maketitle
     \end{frame}
     
+    \begin{frame}{Увод}
+        \begin{itemize}
+            \item До сада, били смо упознати са радом са директоријумима и фајловима из перспективе корисника
+            \item Сада желимо да видимо како су ти подаци организовани на диску
+            \begin{itemize}
+                \item и како функционишу библиотеке са којима смо до сада приступали фајловима
+            \end{itemize}
+            \item Неопходно је да се подсетимо основих појмова из архитектуре рачунара и оперативних система
+        \end{itemize}
+    \end{frame}
+    
     \begin{frame}{Шта рачунар заиста зна да ради?}
         \begin{itemize}
             \item Језик рачунара: \textbf{скуп инструкција} (енгл. ISA, Instruction Set Architecture)
@@ -132,9 +143,134 @@
         \end{figure}
     \end{frame}
     
+    \begin{frame}[allowframebreaks]{Фајл систем}
+        \begin{itemize}
+            \item Представља формат организације података на трајном складишту
+            \item Хијерархијска структура (стабло)
+            \item Уводи две главне апстракције:
+            \begin{itemize}
+                \item \textbf{фајл}: именовани запис
+                \item \textbf{директоријум}: групише друге директоријуме и фајлове
+            \end{itemize}
+            \item Додатно: контрола приступа фајловима
+            \begin{itemize}
+                \item IO инструкције се извршавају у привилегованом режиму
+                \item интеракција са трајним складиштем је могућа искључиво преко системских позива
+                \item систем одбија извршавање акције уколико корисник нема овлашћење
+            \end{itemize}
+        \end{itemize}
+        
+        \framebreak
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/UnixDirectoryTree.png}
+            \label{fig:UnixDirectoryTree.png}
+        \end{figure}
+    \end{frame}
+    
+    \begin{frame}{UNIX file API}
+        \begin{itemize}
+            \item fopen
+            \item fread
+            \item fwrite
+            \item fseek
+            \item fclose
+        \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Трајно складиште}
+        \begin{figure}
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/hdd_address_space.png}
+            \label{fig:hdd_address_space.png}
+        \end{figure}
+        
+        Трајно складиште можемо посматрати као \textbf{адресни простор}. Разлика у односу на радну меморију је да је најмања јединица коју
+        је могуће адресирати 512 бајтова.
+    \end{frame}
+    
+    \begin{frame}{Структура фајл система}
+        \begin{figure}
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/fs_structure.png}
+            \label{fig:fs_structure.png}
+        \end{figure}
+        
+        \textbf{Superblock}: метаподаци о метаподацима фајл система
+        
+        \textbf{Inodes}: метаподаци о садржају фајл система, један inode представља један фајл или директоријум
+        
+        \textbf{Data Region}: блокови који представљају садржај датотека
+    \end{frame}
+    
+    \begin{frame}[allowframebreaks]{Inode}
+        \begin{itemize}
+            \item Један inode (index node) представља један фајл или директоријум
+            \item Уколико представљамо фајл, inode показује на блокове који чувају садржај
+            \item Уколико представљамо директоријум, inode представља фајл са посебном стурктуром
+            \begin{itemize}
+                \item у суштини, парови (назив фајла, inode ID)
+                \item и даље важе сва правила чувања обичних фајлова!
+            \end{itemize}
+            \item Број inode-ова ограничава број фајлова/директоријума које је могуће представити фајл системом
+            \item Додатно: подаци о власништву (због контроле приступа)
+        \end{itemize}
+        
+        \framebreak
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/inode1.png}
+            \label{fig:inode1.png}
+        \end{figure}
+    \end{frame}
+    
+    \begin{frame}[allowframebreaks]{Inode Disk Map}
+        \begin{itemize}
+            \item Представља асиметрично стабло
+            \item Показивачи 0-9 су директни
+            \begin{itemize}
+                \item чувају адресу data block-a који садржи податке
+            \end{itemize}
+            \item Показивач 10 је индиректан
+            \begin{itemize}
+                \item чува адресу data block-a који садржи адресе других data block-ова
+            \end{itemize}
+            \item Показивач 11 је двоструко индиректан
+            \item Показивач 12 је троструко индиректан
+            \item Нивои индирекције су уведени због односа величине метаподатака и садржаја фајлова
+            \item Број показивача ограничава величину фајла који је могуће представити у фајл систему
+        \end{itemize}
+        
+        \framebreak
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/inode_data_pointers.png}
+            \label{fig:inode_data_pointers.png}
+        \end{figure}
+    \end{frame}
+    
+    \begin{frame}[allowframebreaks]{Формат директоријума}
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/dir_layout1.png}
+            \label{fig:dir_layout1.png}
+        \end{figure}
+        
+        \framebreak
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/dir_layout2.png}
+            \label{fig:dir_layout2.png}
+        \end{figure}
+    \end{frame}
+    
     \begin{frame}{Литература}
         \begin{itemize}
             \item Operating Systems: Three Easy Pieces, Remzi H. Arpaci-Dusseau \& Andrea C. Arpaci-Dusseau
+            \item File Systems, Thomas Doeppner
+            \item Unix File System, Sechang (Sonny) Son
             \item Computer Organization and Design: The Hardware/Software Interface, David A. Patterson \& John L. Hennessy
             \item Системски софтвер (презентације), Иван Нејгебауер
             \item Operating Systems: Internals and Design Principles, William Stallings
