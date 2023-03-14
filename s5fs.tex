@@ -50,6 +50,53 @@
         \end{itemize}
     \end{frame}
     
+    \begin{frame}[allowframebreaks]{Померање података}
+        \begin{itemize}
+            \item Процесор може да ради искључиво са вредностима које се налазе у радној меморији или регистарима
+            \item Померање података по радној меморији/регистрима је релативно једноставно
+            \begin{itemize}
+                \item већина инструкција раде са меморијским адресама и регистрима директно
+            \end{itemize}
+            \item Комуникација са улазно/излазним уређајима је нешто компликованија
+            \begin{itemize}
+                \item потребно је послати команду уређају
+                \item прочитати одговор
+                \item одговор сачувати у радној меморији и даље вршити обраде над њим
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{I/O механизми}
+        \begin{itemize}
+            \item \textbf{Програмирани I/O}: процесор директно управља уређајима, шаље захтев и чека одговор
+            \begin{itemize}
+                \item \textbf{Memory Mapped I/O}: уређаји су представљени меморијским адресама, користимо обичне инструкције
+                \item \textbf{Port Mapped I/O}: уређаји су представљени бројем порта, користимо посебне инструкције (x86: IN, OUT)
+            \end{itemize}
+            \item \textbf{Direct Memory Access (DMA)}: DMA контролер директно приступа радној меморији и прекидом обавештава процесор о извршеној акцији
+            \begin{itemize}
+                \item подаци се чувају у радној меморији
+                \item минимална комуникација са DMA контролером преко програмираног I/O
+            \end{itemize}
+        \end{itemize}
+    \end{frame}
+    
+    \begin{frame}{Програмирани I/O}
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/prog_io.png}
+            \label{fig:prog_io.png}
+        \end{figure}
+    \end{frame}
+    
+    \begin{frame}{Direct Memory Access (DMA)}
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{images/dma.png}
+            \label{fig:dma.png}
+        \end{figure}
+    \end{frame}
+    
     \begin{frame}[allowframebreaks]{Меморијска хијерархија}
         \textit{
             Ideally one would desire an indefinitely large
@@ -171,11 +218,26 @@
     
     \begin{frame}{UNIX file API}
         \begin{itemize}
-            \item fopen
-            \item fread
-            \item fwrite
-            \item fseek
-            \item fclose
+            \item \textbf{FILE *fopen(const char *filename, const char *mode)}
+            \begin{itemize}
+                \item отварање фајла на задатој путањи
+            \end{itemize}
+            \item \textbf{size\_t fread(void *ptr, size\_t size, size\_t nmemb, FILE *stream)}
+            \begin{itemize}
+                \item читање отвореног фајла
+            \end{itemize}
+            \item \textbf{size\_t fwrite(const void *ptr, size\_t size, size\_t nmemb, FILE *stream)}
+            \begin{itemize}
+                \item испис података у отворени фајл
+            \end{itemize}
+            \item \textbf{int fseek(FILE *stream, long int offset, int whence)}
+            \begin{itemize}
+                \item померање показивача у отвореном фајлу
+            \end{itemize}
+            \item \textbf{int fclose(FILE *stream)}
+            \begin{itemize}
+                \item затварање фајла
+            \end{itemize}
         \end{itemize}
     \end{frame}
     
@@ -219,7 +281,7 @@
     \begin{frame}[allowframebreaks]{Free inode list}
         \begin{itemize}
             \item Неопходно је да знамо који inode-ови су слободни, како би могли да их искористимо за креирање фајлова/директоријума
-            \item У inode листи, слободни inode-ови су означени тако што је mode = 0
+            \item У inode листи, слободни inode-ови су означени тако што је \begin{math}mode = 0\end{math}
             \item Додатну (кеширану) листу садржи superblock
         \end{itemize}
         
@@ -259,7 +321,7 @@
             \item Уколико представљамо фајл, inode показује на блокове који чувају садржај
             \item Уколико представљамо директоријум, inode представља фајл са посебном стурктуром
             \begin{itemize}
-                \item у суштини, парови (назив фајла, inode ID)
+                \item у суштини, парови \begin{math}(filename, inode ID)\end{math}
                 \item и даље важе сва правила чувања обичних фајлова!
             \end{itemize}
             \item Број inode-ова ограничава број фајлова/директоријума које је могуће представити фајл системом
@@ -348,7 +410,7 @@
             \item Креирамо нови inode који ће да представља \textbf{bar}
             \item inode \textbf{bar} означавамо као заузет
             \item Проналазимо директоријум \textbf{/foo}
-            \item У фајл који представља директоријум додајемо нови запис (foo, new ID)
+            \item У фајл који представља директоријум додајемо нови запис \begin{math}(foo, new ID)\end{math}
         \end{itemize}
         
         \framebreak
